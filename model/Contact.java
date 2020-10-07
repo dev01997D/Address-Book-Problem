@@ -67,7 +67,8 @@ public class Contact {
 	}
 
 	// Parametrized Constructor
-	public Contact(String firstName, String lastName, String address, String cityName, int zipNumber, long phoneNumber, String emailId) {
+	public Contact(String firstName, String lastName, String address, String cityName, int zipNumber, long phoneNumber,
+			String emailId) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -78,5 +79,11 @@ public class Contact {
 	}
 
 	public Contact() {
+	}
+
+	@Override
+	public String toString() {
+		return "First Name: " + getFirstName() + ", Last Name " + getLastName() + ", Address " + getAddress() + ", City "
+				+ getCityName() + ", Phone Number " + getPhoneNumber() + ", Email " + getEmailId();
 	}
 }

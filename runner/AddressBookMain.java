@@ -1,6 +1,8 @@
 package com.blz.addressbooksystem.runner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -9,6 +11,7 @@ import java.util.stream.Collectors;
 import com.blz.addressbooksystem.model.AddressBook;
 import com.blz.addressbooksystem.model.AddressBookDictionary;
 import com.blz.addressbooksystem.model.Contact;
+import com.blz.addressbooksystem.model.SortByFirstName;
 
 public class AddressBookMain {
 
@@ -43,7 +46,8 @@ public class AddressBookMain {
 					System.out.println(
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
 									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  "
-									+ "\n6 : Conunt number of contacts in given city \n7 : Print contact details\n8 : Exit");
+									+ "\n6 : Conunt number of contacts in given city \n7 : Print the Contact entries in sorted manner by First Name"
+									+ "\n8 : Print contact details\n9 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
@@ -172,10 +176,7 @@ public class AddressBookMain {
 						if (contactListSearch.isEmpty())
 							System.out.println("No contact details found for given details.");
 						else {
-							contactListSearch.stream()
-									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
-											+ " Last Name " + Contact.getLastName() + " City Name "
-											+ Contact.getCityName() + " Phone Number " + Contact.getPhoneNumber()));
+							contactListSearch.stream().forEach((Contact) -> System.out.println(Contact));
 						}
 						break;
 
@@ -196,14 +197,12 @@ public class AddressBookMain {
 						if (contactListView.isEmpty())
 							System.out.println("No contact details found for given city details.");
 						else {
-							contactListView.stream()
-									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
-											+ " Last Name " + Contact.getLastName() + " Phone Number "
-											+ Contact.getPhoneNumber()));
+							System.out.println("These are contact from the city " + cityNameView);
+							contactListView.stream().forEach((Contact) -> System.out.println(Contact));
 						}
 						break;
-						
-					//Ability to count number of contacts in a given city
+
+					// Ability to count number of contacts in a given city
 					case 6:
 						long total = 0;
 						System.out.println("Enter the city Name:");
@@ -219,6 +218,21 @@ public class AddressBookMain {
 							System.out.println("No contact details found for given city details.");
 						break;
 
+					// Printing the contact details sorted on the first name
+					case 7:
+						List<Contact> sortContactByName = new ArrayList<>();
+						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+							sortContactByName.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
+						}
+						Collections.sort(sortContactByName, new SortByFirstName());
+						if (sortContactByName.isEmpty())
+							System.out.println("No contact details found for given city details.");
+						else {
+							System.out.println("Contacts details sorted on the first name are as follow : ");
+							sortContactByName.stream().forEach((Contact) -> System.out.println(Contact));
+						}
+						break;
+
 					// Printing all the Contacts from AddressBook
 					default:
 						List<Contact> contactList = new ArrayList<>();
@@ -228,14 +242,11 @@ public class AddressBookMain {
 						if (contactList.isEmpty())
 							System.out.println("No contact details has been added in any Address Book yet!.");
 						else {
-							contactList.stream()
-									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
-											+ " Last Name " + Contact.getLastName() + " Phone Number "
-											+ Contact.getPhoneNumber()));
+							contactList.stream().forEach((Contact) -> System.out.println(Contact));
 						}
 						break;
 					}
-				} while (option != 8);
+				} while (option != 9);
 			} else
 				System.exit(0);
 		}
