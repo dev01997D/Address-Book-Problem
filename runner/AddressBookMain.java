@@ -42,7 +42,7 @@ public class AddressBookMain {
 
 					System.out.println(
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
-									+ "\n4 : Print contact details \n5 : Exit");
+									+ "\n4 : Search  a Contact from multiple AddressBook \n5. Print contact details \n6 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
@@ -153,6 +153,32 @@ public class AddressBookMain {
 							System.out.println("Contact not Available. Please Try Again!");
 						break;
 
+					// Ability to search for a contact from multiple addressBook
+					case 4:
+						System.out.println("Enter your First Name of Contact : ");
+						String firstNameSearch = sc.next();
+						System.out.println("Enter your Last Name of Contact : ");
+						String lastNameSearch = sc.next();
+
+						List<Contact> contactListSearch = new ArrayList<>();
+						Predicate<Contact> predicateContactSearch = (
+								Contact) -> Contact.getFirstName().equalsIgnoreCase(firstNameSearch)
+										&& Contact.getLastName().equalsIgnoreCase(lastNameSearch);
+						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+							contactListSearch.addAll((addbook.getAddressBook()).stream().filter(predicateContactSearch)
+									.collect(Collectors.toList()));
+						}
+						if (contactListSearch.isEmpty())
+							System.out.println("No contact details found for given details.");
+						else {
+							contactListSearch.stream()
+									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
+											+ " Last Name " + Contact.getLastName() + " City Name "
+											+ Contact.getCityName() + " Phone Number " + Contact.getPhoneNumber()));
+						}
+						break;
+						
+					//Printing all the Contacts from AddressBook
 					default:
 						List<Contact> contactList = new ArrayList<>();
 						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
@@ -162,13 +188,13 @@ public class AddressBookMain {
 							System.out.println("No contact details found for given city details.");
 						else {
 							contactList.stream()
-							.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
-							+ " Last Name " + Contact.getLastName() + " Phone Number "
-							+ Contact.getPhoneNumber()));
+									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
+											+ " Last Name " + Contact.getLastName() + " Phone Number "
+											+ Contact.getPhoneNumber()));
 						}
 						break;
 					}
-				} while (option != 5);
+				} while (option != 6);
 			} else
 				System.exit(0);
 		}
