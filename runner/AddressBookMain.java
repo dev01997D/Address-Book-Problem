@@ -2,7 +2,6 @@ package com.blz.addressbooksystem.runner;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -11,7 +10,9 @@ import java.util.stream.Collectors;
 import com.blz.addressbooksystem.model.AddressBook;
 import com.blz.addressbooksystem.model.AddressBookDictionary;
 import com.blz.addressbooksystem.model.Contact;
+import com.blz.addressbooksystem.model.SortByCity;
 import com.blz.addressbooksystem.model.SortByFirstName;
+import com.blz.addressbooksystem.model.SortByPhoneNumber;
 
 public class AddressBookMain {
 
@@ -47,7 +48,7 @@ public class AddressBookMain {
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
 									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  "
 									+ "\n6 : Conunt number of contacts in given city \n7 : Print the Contact entries in sorted manner by First Name"
-									+ "\n8 : Print contact details\n9 : Exit");
+									+ "\n8 : Print the contact details sorted by City Name And Phone Number \n9 : Print contact details\n10 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
@@ -224,12 +225,38 @@ public class AddressBookMain {
 						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
 							sortContactByName.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
 						}
+						// Collection library to sort the name
 						Collections.sort(sortContactByName, new SortByFirstName());
 						if (sortContactByName.isEmpty())
 							System.out.println("No contact details found for given city details.");
 						else {
 							System.out.println("Contacts details sorted on the first name are as follow : ");
 							sortContactByName.stream().forEach((Contact) -> System.out.println(Contact));
+						}
+						break;
+
+					// Printing the contact details sorted on the first name
+					case 8:
+						List<Contact> sortContact = new ArrayList<>();
+						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+							sortContact.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
+						}
+						// Collection library to sort the City name
+						Collections.sort(sortContact, new SortByCity());
+						if (sortContact.isEmpty())
+							System.out.println("No contact details found for given city details.");
+						else {
+							System.out.println("Contacts details sorted on the City name are as follow : ");
+							sortContact.stream().forEach((Contact) -> System.out.println(Contact));
+						}
+
+						// Collection library to sort the Phone Number
+						Collections.sort(sortContact, new SortByPhoneNumber());
+						if (sortContact.isEmpty())
+							System.out.println("No contact details found for given city details.");
+						else {
+							System.out.println("Contacts details sorted on the Phone number are as follow : ");
+							sortContact.stream().forEach((Contact) -> System.out.println(Contact));
 						}
 						break;
 
@@ -246,7 +273,7 @@ public class AddressBookMain {
 						}
 						break;
 					}
-				} while (option != 9);
+				} while (option != 10);
 			} else
 				System.exit(0);
 		}
