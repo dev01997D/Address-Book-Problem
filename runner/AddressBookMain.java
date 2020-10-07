@@ -42,8 +42,8 @@ public class AddressBookMain {
 
 					System.out.println(
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
-									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  \n6 : Print contact details"
-									+ "\n7 : Exit");
+									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  "
+									+ "\n6 : Conunt number of contacts in given city \n7 : Print contact details\n8 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
@@ -202,6 +202,22 @@ public class AddressBookMain {
 											+ Contact.getPhoneNumber()));
 						}
 						break;
+						
+					//Ability to count number of contacts in a given city
+					case 6:
+						long total = 0;
+						System.out.println("Enter the city Name:");
+						String cityNameContactCount = sc.next();
+						Predicate<Contact> predicateContactCount = (Contact) -> Contact.getCityName()
+								.equalsIgnoreCase(cityNameContactCount);
+						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+							total = addbook.getAddressBook().stream().filter(predicateContactCount).count();
+						}
+						if (total != 0)
+							System.out.println("Number of contacts in given city are : " + total);
+						else
+							System.out.println("No contact details found for given city details.");
+						break;
 
 					// Printing all the Contacts from AddressBook
 					default:
@@ -219,7 +235,7 @@ public class AddressBookMain {
 						}
 						break;
 					}
-				} while (option != 7);
+				} while (option != 8);
 			} else
 				System.exit(0);
 		}
