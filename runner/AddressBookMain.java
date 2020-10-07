@@ -42,7 +42,8 @@ public class AddressBookMain {
 
 					System.out.println(
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
-									+ "\n4 : Search  a Contact from multiple AddressBook \n5. Print contact details \n6 : Exit");
+									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  \n6 : Print contact details"
+									+ "\n7 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
@@ -177,15 +178,39 @@ public class AddressBookMain {
 											+ Contact.getCityName() + " Phone Number " + Contact.getPhoneNumber()));
 						}
 						break;
-						
-					//Printing all the Contacts from AddressBook
+
+					// Ability to view person by city name
+					case 5:
+						System.out.println("Enter the city Name:");
+						String cityNameView = sc.next();
+
+						// Using List to store the filter contact. Using Stream API to filter the
+						// contact which satisfy the criteria
+						List<Contact> contactListView = new ArrayList<>();
+						Predicate<Contact> predicateContactView = (Contact) -> Contact.getCityName()
+								.equalsIgnoreCase(cityNameView);
+						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+							contactListView.addAll((addbook.getAddressBook()).stream().filter(predicateContactView)
+									.collect(Collectors.toList()));
+						}
+						if (contactListView.isEmpty())
+							System.out.println("No contact details found for given city details.");
+						else {
+							contactListView.stream()
+									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
+											+ " Last Name " + Contact.getLastName() + " Phone Number "
+											+ Contact.getPhoneNumber()));
+						}
+						break;
+
+					// Printing all the Contacts from AddressBook
 					default:
 						List<Contact> contactList = new ArrayList<>();
 						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
 							contactList.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
 						}
 						if (contactList.isEmpty())
-							System.out.println("No contact details found for given city details.");
+							System.out.println("No contact details has been added in any Address Book yet!.");
 						else {
 							contactList.stream()
 									.forEach((Contact) -> System.out.println("First Name" + Contact.getFirstName()
@@ -194,7 +219,7 @@ public class AddressBookMain {
 						}
 						break;
 					}
-				} while (option != 6);
+				} while (option != 7);
 			} else
 				System.exit(0);
 		}
