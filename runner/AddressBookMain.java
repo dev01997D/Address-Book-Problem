@@ -261,16 +261,8 @@ public class AddressBookMain {
 						break;
 
 					// Printing all the Contacts from AddressBook
-					default:
-						List<Contact> contactList = new ArrayList<>();
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							contactList.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
-						}
-						if (contactList.isEmpty())
-							System.out.println("No contact details has been added in any Address Book yet!.");
-						else {
-							contactList.stream().forEach((Contact) -> System.out.println(Contact));
-						}
+					case 9:
+						addressBookDictionary.printAllAddressBook();
 						break;
 					}
 				} while (option != 10);
