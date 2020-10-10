@@ -15,31 +15,26 @@ import com.blz.addressbooksystem.model.SortByFirstName;
 import com.blz.addressbooksystem.model.SortByPhoneNumber;
 
 public class AddressBookMain {
+	private static Scanner sc = new Scanner(System.in);
+	// Instantiation of AddressBookDictionary Class
+	static AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
+	// Instantiation of AddressBook Class
+	static AddressBook addressBookObj = new AddressBook();
 
 	public static void main(String[] args) {
-
 		// Display Welcome Message
 		System.out.println("Welcome to Address Book Program");
 
-		Scanner sc = new Scanner(System.in);
-
-		// Instantiation of AddressBookDictionary Class
-		AddressBookDictionary addressBookDictionary = new AddressBookDictionary();
-
 		while (true) {
-			System.out.println("Please Select From Menu: \n1. Add New Address Book \n2. Exit:");
+			System.out.println(
+					"Please Select From Menu: \n1. Add New Address Book \n2. Print All AddressBook \n3 : Exit:");
 			int select = sc.nextInt();
 
 			if (select == 1) {
 				System.out.println("Enter the Address Book Name : ");
 				sc.nextLine();
 				String addressBookName = sc.nextLine();
-
-				// Instantiation of AddressBook Class
-				AddressBook addressBookObj = new AddressBook();
-
 				addressBookDictionary.addAddressBook(addressBookName, addressBookObj);
-
 				int option = 0;
 
 				do {
@@ -47,42 +42,13 @@ public class AddressBookMain {
 					System.out.println(
 							"Please Select From Menu: \n1 : Add Contact to Address Book\n2 : Update Existing Contact\n3 : Remove Contact"
 									+ "\n4 : Search  a Contact from multiple AddressBook \n5 : View persons by City Name  "
-									+ "\n6 : Conunt number of contacts in given city \n7 : Print the Contact entries in sorted manner by First Name"
-									+ "\n8 : Print the contact details sorted by City Name And Phone Number \n9 : Print contact details\n10 : Exit");
+									+ "\n6 : Count number of contacts in given city \n7 : Print the Contact entries in sorted manner by First Name"
+									+ "\n8 : Print the contact details sorted by City Name And Phone Number \n9 : Exit");
 					option = sc.nextInt();
 
 					switch (option) {
-					// To Take Console Input for Contact Details
 					case 1:
-						System.out.println("Enter First Name : ");
-						String firstName = sc.next();
-						System.out.println("Enter Last Name : ");
-						String lastName = sc.next();
-						sc.nextLine();
-						System.out.println("Enter Address : ");
-						String address = sc.nextLine();
-						System.out.println("Enter City : ");
-						String city = sc.nextLine();
-						System.out.println("Enter Zip Code: ");
-						int zipCode = sc.nextInt();
-						System.out.println("Enter Phone Number : ");
-						Long phoneNo = sc.nextLong();
-						System.out.println("Enter Email ID : ");
-						String email = sc.next();
-
-						// Use of predicate to check for duplicate entry
-						Predicate<Contact> isDuplicate = (Contact) -> Contact.getFirstName().equalsIgnoreCase(firstName)
-								&& Contact.getLastName().equalsIgnoreCase(lastName);
-						boolean duplicateCheck = (addressBookObj.getAddressBook()).stream().anyMatch(isDuplicate);
-						if (duplicateCheck == true) {
-							System.out.println("Duplicate Entry. Try Again");
-						} else {
-							// Instantiation of Contact Class
-							Contact contactObj = new Contact(firstName, lastName, address, city, zipCode, phoneNo,
-									email);
-							addressBookObj.addContactToAddressBook(contactObj);
-							System.out.println("Contact added!");
-						}
+						addressBookObj.addContact();
 						break;
 
 					case 2: // Console input to take First and Last Names to Update Contact
@@ -96,54 +62,7 @@ public class AddressBookMain {
 						if (contactEdited == null) {
 							System.out.println("Contact Not Available. Please try Again");
 						} else {
-
-							System.out.println(
-									"Select the Option you want to Update\n1 : First Name\n2 : Last Name\n3 : Address\n"
-											+ "4 : City\n5 : Zip\n6 : Phone Number\n7 : Email:");
-							int choice = sc.nextInt();
-
-							switch (choice) {
-							case 1:
-								System.out.println("Enter the new First Name to Update : ");
-								String newFirstName = sc.next();
-								contactEdited.setFirstName(newFirstName);
-								break;
-							case 2:
-								System.out.println("Enter the new Last Name to Update : ");
-								String newLastName = sc.next();
-								contactEdited.setLastName(newLastName);
-								break;
-							case 3:
-								System.out.println("Enter the new Address to Update : ");
-								sc.nextLine();
-								String newAddress = sc.nextLine();
-								contactEdited.setAddress(newAddress);
-								break;
-							case 4:
-								System.out.println("Enter the new City to Update : ");
-								sc.nextLine();
-								String newCity = sc.nextLine();
-								contactEdited.setCityName(newCity);
-								break;
-							case 6:
-								System.out.println("Enter the new Zip to Update : ");
-								int newZip = sc.nextInt();
-								contactEdited.setZipNumber(newZip);
-								break;
-							case 7:
-								System.out.println("Enter the new Phone Number to Update : ");
-								Long newPhoneNo = sc.nextLong();
-								contactEdited.setPhoneNumber(newPhoneNo);
-								break;
-							case 8:
-								System.out.println("Enter the new Email to Update : ");
-								String newEmail = sc.next();
-								contactEdited.setEmailId(newEmail);
-								break;
-							default:
-								System.out.println("Enter Valid Number");
-								break;
-							}
+							addressBookObj.editGivenDetail(contactEdited);
 						}
 						break;
 
@@ -159,115 +78,126 @@ public class AddressBookMain {
 							System.out.println("Contact not Available. Please Try Again!");
 						break;
 
-					// Ability to search for a contact from multiple addressBook
 					case 4:
-						System.out.println("Enter your First Name of Contact : ");
-						String firstNameSearch = sc.next();
-						System.out.println("Enter your Last Name of Contact : ");
-						String lastNameSearch = sc.next();
-
-						List<Contact> contactListSearch = new ArrayList<>();
-						Predicate<Contact> predicateContactSearch = (
-								Contact) -> Contact.getFirstName().equalsIgnoreCase(firstNameSearch)
-										&& Contact.getLastName().equalsIgnoreCase(lastNameSearch);
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							contactListSearch.addAll((addbook.getAddressBook()).stream().filter(predicateContactSearch)
-									.collect(Collectors.toList()));
-						}
-						if (contactListSearch.isEmpty())
-							System.out.println("No contact details found for given details.");
-						else {
-							contactListSearch.stream().forEach((Contact) -> System.out.println(Contact));
-						}
+						searchGivenContact();
 						break;
 
-					// Ability to view person by city name
 					case 5:
 						System.out.println("Enter the city Name:");
 						String cityNameView = sc.next();
-
-						// Using List to store the filter contact. Using Stream API to filter the
-						// contact which satisfy the criteria
-						List<Contact> contactListView = new ArrayList<>();
-						Predicate<Contact> predicateContactView = (Contact) -> Contact.getCityName()
-								.equalsIgnoreCase(cityNameView);
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							contactListView.addAll((addbook.getAddressBook()).stream().filter(predicateContactView)
-									.collect(Collectors.toList()));
-						}
-						if (contactListView.isEmpty())
-							System.out.println("No contact details found for given city details.");
-						else {
-							System.out.println("These are contact from the city " + cityNameView);
-							contactListView.stream().forEach((Contact) -> System.out.println(Contact));
-						}
+						getContactsOfGivenCity(cityNameView);
 						break;
 
-					// Ability to count number of contacts in a given city
 					case 6:
-						long total = 0;
 						System.out.println("Enter the city Name:");
 						String cityNameContactCount = sc.next();
-						Predicate<Contact> predicateContactCount = (Contact) -> Contact.getCityName()
-								.equalsIgnoreCase(cityNameContactCount);
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							total = addbook.getAddressBook().stream().filter(predicateContactCount).count();
-						}
-						if (total != 0)
-							System.out.println("Number of contacts in given city are : " + total);
-						else
-							System.out.println("No contact details found for given city details.");
+						getTotalContactsInGivenCity(cityNameContactCount);
 						break;
 
-					// Printing the contact details sorted on the first name
 					case 7:
-						List<Contact> sortContactByName = new ArrayList<>();
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							sortContactByName.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
-						}
-						// Collection library to sort the name
-						Collections.sort(sortContactByName, new SortByFirstName());
-						if (sortContactByName.isEmpty())
-							System.out.println("No contact details found for given city details.");
-						else {
-							System.out.println("Contacts details sorted on the first name are as follow : ");
-							sortContactByName.stream().forEach((Contact) -> System.out.println(Contact));
-						}
+						printContactSortedByFirstName();
 						break;
 
-					// Printing the contact details sorted on the first name
 					case 8:
-						List<Contact> sortContact = new ArrayList<>();
-						for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
-							sortContact.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
-						}
-						// Collection library to sort the City name
-						Collections.sort(sortContact, new SortByCity());
-						if (sortContact.isEmpty())
-							System.out.println("No contact details found for given city details.");
-						else {
-							System.out.println("Contacts details sorted on the City name are as follow : ");
-							sortContact.stream().forEach((Contact) -> System.out.println(Contact));
-						}
-
-						// Collection library to sort the Phone Number
-						Collections.sort(sortContact, new SortByPhoneNumber());
-						if (sortContact.isEmpty())
-							System.out.println("No contact details found for given city details.");
-						else {
-							System.out.println("Contacts details sorted on the Phone number are as follow : ");
-							sortContact.stream().forEach((Contact) -> System.out.println(Contact));
-						}
-						break;
-
-					// Printing all the Contacts from AddressBook
-					case 9:
-						addressBookDictionary.printAllAddressBook();
+						printContactSortedByCityOrPhone();
 						break;
 					}
-				} while (option != 10);
-			} else
+				} while (option != 9);
+			}
+			// Printing all the Contacts from AddressBook
+			else if (select == 2)
+				addressBookDictionary.printAllAddressBook();
+			else
 				System.exit(0);
+		}
+	}
+
+	// Ability to search for a contact from multiple addressBook
+	private static void searchGivenContact() {
+		System.out.println("Enter your First Name of Contact : ");
+		String firstNameSearch = sc.next();
+		System.out.println("Enter your Last Name of Contact : ");
+		String lastNameSearch = sc.next();
+		List<Contact> searchedContact = new ArrayList<>();
+		Predicate<Contact> predicateContactSearch = (
+				Contact) -> Contact.getFirstName().equalsIgnoreCase(firstNameSearch)
+						&& Contact.getLastName().equalsIgnoreCase(lastNameSearch);
+		for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+			searchedContact.addAll(
+					(addbook.getAddressBook()).stream().filter(predicateContactSearch).collect(Collectors.toList()));
+		}
+		if (searchedContact.isEmpty())
+			System.out.println("No contact details found for given details.");
+		else
+			searchedContact.stream().forEach((Contact) -> System.out.println(Contact));
+	}
+
+	// Ability to view person by city name
+	private static void getContactsOfGivenCity(String cityNameView) {
+		// Using Stream API to filter the contact which satisfy the criteria
+		List<Contact> contactOfGivenCity = new ArrayList<>();
+		Predicate<Contact> predicateContactView = (Contact) -> Contact.getCityName().equalsIgnoreCase(cityNameView);
+
+		for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+			contactOfGivenCity.addAll(
+					(addbook.getAddressBook()).stream().filter(predicateContactView).collect(Collectors.toList()));
+		}
+		System.out.println(contactOfGivenCity);
+		if (contactOfGivenCity.isEmpty())
+			System.out.println("No contact details found for given city details.");
+		else {
+			System.out.println("These are contact from the city " + cityNameView);
+			contactOfGivenCity.stream().forEach((Contact) -> System.out.println(Contact));
+		}
+	}
+
+	// Ability to count number of contacts in a given city
+	private static void getTotalContactsInGivenCity(String cityNameContactCount) {
+		long total = 0;
+		Predicate<Contact> predicateContactCount = (Contact) -> Contact.getCityName()
+				.equalsIgnoreCase(cityNameContactCount);
+		for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+			total = addbook.getAddressBook().stream().filter(predicateContactCount).count();
+		}
+		if (total != 0)
+			System.out.println("Number of contacts in given city are : " + total);
+		else
+			System.out.println("No contact details found for given city details.");
+	}
+
+	// Printing the contact details sorted on the first name
+	private static void printContactSortedByFirstName() {
+		List<Contact> sortContactByName = new ArrayList<>();
+		for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+			sortContactByName.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
+		}
+		// Collection library to sort the name
+		Collections.sort(sortContactByName, new SortByFirstName());
+		if (sortContactByName.isEmpty())
+			System.out.println("No contact details found for given city details.");
+		else {
+			System.out.println("Contacts details sorted on the first name are as follow : ");
+			sortContactByName.stream().forEach((Contact) -> System.out.println(Contact));
+		}
+	}
+
+	// Printing the contact details sorted on the City name or Phone
+	private static void printContactSortedByCityOrPhone() {
+		List<Contact> sortContact = new ArrayList<>();
+		for (AddressBook addbook : addressBookDictionary.getAddressBookDictionary().values()) {
+			sortContact.addAll((addbook.getAddressBook()).stream().collect(Collectors.toList()));
+		}
+		System.out.println("Enter Option 1 for sorting on city name else for Phone number enter 2 : ");
+		int option = sc.nextInt();
+		if (option == 1)
+			Collections.sort(sortContact, new SortByCity());
+		else if (option == 2)
+			Collections.sort(sortContact, new SortByPhoneNumber());
+		if (sortContact.isEmpty())
+			System.out.println("No contact details found for given details.");
+		else {
+			System.out.println("Sorted Contacts details are as follow : ");
+			sortContact.stream().forEach((Contact) -> System.out.println(Contact));
 		}
 	}
 }
